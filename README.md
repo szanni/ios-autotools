@@ -70,15 +70,22 @@ You can use this to build all your libraries within your project automatically.
 Add a new *External Build System* target to your project (*File > New > Target > OS X > Other > External Build System*).
 Enter a name like *StaticLibs* and create a *Makefile* in the top level of your project:
 
+    ARCHS="armv7 armv7s arm64 i686 x86_64"
     FRAMEWORKS = Frameworks/MyLib.framework
 
     all: $(FRAMEWORKS)
 
     Frameworks/MyLib.framework: mylib
       cd $< && ./autogen.sh
-      cd $< && PREFIX=$(PROJECT_DIR) autoframework MyLib libmylib.a ## $(PROJECT_DIR) set by Xcode
+      # $(PROJECT_DIR)  set by Xcode
+      # $(ARCHS)        set by Xcode, but sadly does not include all target architectures
+      cd $< && PREFIX=$(PROJECT_DIR) ARCHS=$(ARCHS) autoframework MyLib libmylib.a
 
-Add the new target to the dependencies of your main project and build.
+Be aware that Xcode itself does set the ARCHS variable to an incorrect value. We therefore
+have to override the value by manually specifying the desired architectures in the
+Makefile.
+
+Now add the new target to the dependencies of your main project and build.
 You should now be able to either add your libraries either by adding the
 desired frameworks in *Frameworks/* or by adding *Static/{include,lib}* to the
 paths in your main project and setting the appropriate linker flags.
