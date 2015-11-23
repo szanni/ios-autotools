@@ -109,6 +109,7 @@ export ac_cv_func_realloc_0_nonnull=yes
 ./configure \
 	--prefix="$PREFIX" \
 	--host="$CHOST" \
+	--with-sysroot="$SDKROOT" \
 	--enable-static \
 	--disable-shared \
 	$@
