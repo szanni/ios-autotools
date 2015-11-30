@@ -53,8 +53,7 @@ for ARCH in $ARCHS; do
 done
 
 # Install header files
-PREFIX="$STATICDIR/$ARCH" $ICONFIGURE $ARCH --includedir="$FRAMEWORKDIR/Headers" $@
-make
+PKG_CONFIG_DIR="$PKG_CONFIG_DIR":"$STATICDIR/lib/pkgconfig" PREFIX="$STATICDIR/$ARCH" $ICONFIGURE $ARCH --includedir="$FRAMEWORKDIR/Headers" $@
 make install
 
 # Create multiarch archive
