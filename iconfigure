@@ -7,7 +7,8 @@ usage () {
   echo "  architecture   Target architecture. [armv7|armv7s|arm64|i386|x86_64]"
   echo ""
   echo "  VARIABLEs are:"
-  echo "    SDKVERSION   Target a specific SDK version."
+  echo "    SDKVERSION   SDK version to use for compilation."
+  echo "    SDKTARGET    Target a specific SDK version."
   echo "    PREFIX       Custom install prefix, useful for local installs."
   echo "    CHOST        Configure host, set if not deducable by ARCH."
   echo "    SDK          SDK target, set if not deducable by ARCH. [iphoneos|iphonesimulator]"
@@ -79,6 +80,13 @@ else
   export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
 fi
 
+# Export supplied SDKTARGET or use SDKVERSION
+if [ ! -z "$SDKTARGET" ]; then
+  export SDKTARGET
+else
+  export SDKTARGET=$SDKVERSION
+fi
+
 # Export supplied PREFIX or use default
 if [ ! -z "$PREFIX" ]; then
   export PREFIX
@@ -93,8 +101,8 @@ export CXX=$(xcrun --sdk $SDK --find g++)
 export LD=$(xcrun --sdk $SDK --find ld)
 
 # Flags
-export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION -fembed-bitcode"
-export CPPFLAGS="$CPPFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION -fembed-bitcode"
+export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKTARGET -fembed-bitcode"
+export CPPFLAGS="$CPPFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKTARGET -fembed-bitcode"
 export CXXFLAGS="$CXXFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -fembed-bitcode"
 export LDFLAGS="$LDFLAGS -arch $ARCH -isysroot $SDKROOT -L$PREFIX/lib"
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH":"$SDKROOT/usr/lib/pkgconfig":"$PREFIX/lib/pkgconfig"
