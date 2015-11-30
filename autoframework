@@ -10,6 +10,7 @@ usage () {
   echo "    ARCHS     Only build for specific architectures. Default is:"
   echo "                armv7|armv7s|arm64|i686|x86_64"
   echo "    PREFIX    Installation prefix for framework and static files."
+  echo "    SUFFIX    Suffix for static directory (pass in CONFIGURATION, etc)."
   echo ""
   echo "  All additional parameters are passed to the configure script."
   exit 1
@@ -31,7 +32,12 @@ if [ -z "$PREFIX" ]; then
   PREFIX="$(pwd)"
 fi
 
-STATICDIR="$PREFIX/Static"
+if [ -z "$SUFFIX" ]; then
+  STATICDIR="$PREFIX/Static"
+else
+  STATICDIR="$PREFIX/Static/$SUFFIX"
+fi
+
 FRAMEWORKDIR="$PREFIX/Frameworks/$FRAMEWORK.framework"
 
 if [ -z "$ARCHS" ]; then
