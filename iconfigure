@@ -80,13 +80,6 @@ else
   export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
 fi
 
-# Export supplied SDKTARGET or use SDKVERSION
-if [ ! -z "$SDKTARGET" ]; then
-  export SDKTARGET
-else
-  export SDKTARGET=$SDKVERSION
-fi
-
 # Export supplied PREFIX or use default
 if [ ! -z "$PREFIX" ]; then
   export PREFIX
@@ -114,10 +107,10 @@ export ac_cv_func_malloc_0_nonnull=yes
 export ac_cv_func_realloc_0_nonnull=yes
 
 # Run configure
+	#--with-sysroot="$SDKROOT" \
 ./configure \
 	--prefix="$PREFIX" \
 	--host="$CHOST" \
-	--with-sysroot="$SDKROOT" \
 	--enable-static \
 	--disable-shared \
 	$@
