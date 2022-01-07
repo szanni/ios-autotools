@@ -33,7 +33,7 @@ fi
 export ARCH=$1
 
 # Export supplied CHOST or deduce by ARCH
-if [ ! -z "$CHOST" ]; then
+if [ -n "$CHOST" ]; then
   export CHOST
 else
   case $ARCH in
@@ -53,7 +53,7 @@ else
 fi
 
 # Export supplied SDK or deduce by ARCH
-if [ ! -z "$SDK" ]; then
+if [ -n "$SDK" ]; then
   export SDK
 else
   case $ARCH in
@@ -70,7 +70,7 @@ else
 fi
 
 # Export supplied SDKVERSION or use system default
-if [ ! -z "$SDKVERSION" ]; then
+if [ -n "$SDKVERSION" ]; then
   SDKNAME=$(basename $(xcrun --sdk $SDK --show-sdk-platform-path) .platform)
   export SDKVERSION
   export SDKROOT=$(xcrun --sdk $SDK --show-sdk-platform-path)"/Developer/SDKs/$SDKNAME.$SDKVERSION.sdk"
@@ -80,7 +80,7 @@ else
 fi
 
 # Export supplied PREFIX or use default
-if [ ! -z "$PREFIX" ]; then
+if [ -n "$PREFIX" ]; then
   export PREFIX
 else
   export PREFIX="/opt/$SDK-$SDKVERSION/$ARCH"
