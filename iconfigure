@@ -104,8 +104,8 @@ shift 1
 
 # Run configure
 ./configure \
-	--prefix="$PREFIX" \
-	--host="$CHOST" \
-	--enable-static \
-	--disable-shared \
-	$@
+  --prefix="$PREFIX" \
+  --host="$CHOST" \
+  --enable-static \
+  --disable-shared \
+  $@
