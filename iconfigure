@@ -2,7 +2,7 @@
 set -e
 
 usage () {
-  echo "Usage: [VARIABLE...] $(basename $0) architecture"
+  echo "Usage: [VARIABLE...] $(basename "$0") architecture"
   echo ""
   echo "  architecture   Target architecture. [armv7|armv7s|arm64|i386|x86_64]"
   echo ""
@@ -30,10 +30,10 @@ if [ ! -x "./configure" ] ; then
 fi
 
 # Build architecture
-export ARCH=$1
+export ARCH="$1"
 
 # Export supplied CHOST or deduce by ARCH
-if [ ! -z "$CHOST" ]; then
+if [ -n "$CHOST" ]; then
   export CHOST
 else
   case $ARCH in
@@ -44,7 +44,7 @@ else
       export CHOST=aarch64-apple-darwin*
       ;;
     i386 | x86_64 )
-      export CHOST=$ARCH-apple-darwin*
+      export CHOST="$ARCH"-apple-darwin*
       ;;
     * )
       usage
@@ -53,7 +53,7 @@ else
 fi
 
 # Export supplied SDK or deduce by ARCH
-if [ ! -z "$SDK" ]; then
+if [ -n "$SDK" ]; then
   export SDK
 else
   case $ARCH in
@@ -70,27 +70,27 @@ else
 fi
 
 # Export supplied SDKVERSION or use system default
-if [ ! -z "$SDKVERSION" ]; then
-  SDKNAME=$(basename $(xcrun --sdk $SDK --show-sdk-platform-path) .platform)
+if [ -n "$SDKVERSION" ]; then
+  SDKNAME="$(basename "$(xcrun --sdk "$SDK" --show-sdk-platform-path)" .platform)"
   export SDKVERSION
-  export SDKROOT=$(xcrun --sdk $SDK --show-sdk-platform-path)"/Developer/SDKs/$SDKNAME.$SDKVERSION.sdk"
+  export SDKROOT="$(xcrun --sdk "$SDK" --show-sdk-platform-path)/Developer/SDKs/$SDKNAME.$SDKVERSION.sdk"
 else
-  export SDKVERSION=$(xcrun --sdk $SDK --show-sdk-version) # current version
-  export SDKROOT=$(xcrun --sdk $SDK --show-sdk-path) # current version
+  export SDKVERSION="$(xcrun --sdk "$SDK" --show-sdk-version)" # current version
+  export SDKROOT="$(xcrun --sdk "$SDK" --show-sdk-path)" # current version
 fi
 
 # Export supplied PREFIX or use default
-if [ ! -z "$PREFIX" ]; then
+if [ -n "$PREFIX" ]; then
   export PREFIX
 else
   export PREFIX="/opt/$SDK-$SDKVERSION/$ARCH"
 fi
 
 # Binaries
-export CC=$(xcrun --sdk $SDK --find gcc)
-export CPP=$(xcrun --sdk $SDK --find gcc)" -E"
-export CXX=$(xcrun --sdk $SDK --find g++)
-export LD=$(xcrun --sdk $SDK --find ld)
+export CC="$(xcrun --sdk $SDK --find gcc)"
+export CPP="$(xcrun --sdk $SDK --find gcc) -E"
+export CXX="$(xcrun --sdk $SDK --find g++)"
+export LD="$(xcrun --sdk $SDK --find ld)"
 
 # Flags
 export CFLAGS="$CFLAGS -arch $ARCH -isysroot $SDKROOT -I$PREFIX/include -miphoneos-version-min=$SDKVERSION"
@@ -104,8 +104,8 @@ shift 1
 
 # Run configure
 ./configure \
-	--prefix="$PREFIX" \
-	--host="$CHOST" \
-	--enable-static \
-	--disable-shared \
-	$@
+  --prefix="$PREFIX" \
+  --host="$CHOST" \
+  --enable-static \
+  --disable-shared \
+  "$@"
